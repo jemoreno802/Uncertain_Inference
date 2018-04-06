@@ -7,7 +7,6 @@ public class MyBNInferencer implements Inferencer{
 		System.out.println("Distribution of " + x.name + " given " + e.toString());
 
 		Distribution q = new Distribution (x);
-		//Domain xi = x.getDomain();
 		for (Object xi: x.getDomain()){
 			Assignment exi = e.copy();
 			exi.set(x, xi);
@@ -35,15 +34,15 @@ public class MyBNInferencer implements Inferencer{
 	
 	public Assignment prior_sample(BayesianNetwork bn){
 		Assignment x = new Assignment();
-		List<RandomVariable> vars = bn.getVariableList();
+		List<RandomVariable> vars = bn.getVariableListTopologicallySorted();
 		for(RandomVariable rvar : vars) {				//assign a value to every random variable based on its prior probability
-			x.put(rvar, "true");
+			x.put(rvar, rvar.getDomain().get(0));
 			double probT = bn.getProb(rvar, x);
 			double numba = Math.random();
 			if(numba > probT) {
-				x.set(rvar, "false");
+				x.set(rvar, rvar.getDomain().get(1));
 			}else {
-				x.set(rvar, "true");
+				x.set(rvar, rvar.getDomain().get(0));
 			}
 		}
 		return x;
@@ -81,20 +80,20 @@ public class MyBNInferencer implements Inferencer{
 	public WeightedAssignment weighted_sample(BayesianNetwork bn, Assignment e){
 		double w = 1.0;
 		Assignment x = e.copy();
-		for(RandomVariable var : bn.getVariableList()) {
+		for(RandomVariable var : bn.getVariableListTopologicallySorted()) {
 			//Assignment temp = e.copy();
 			if(e.containsKey(var)) {
 				double p = bn.getProb(var, x);
 				w = w*p;
 				
 			}else {
-				x.put(var, "true");
+				x.put(var, var.getDomain().get(0));
 				double probT = bn.getProb(var, x);
 				double numba = Math.random();
 				if(numba > probT) {
-					x.put(var, "false");
+					x.put(var, var.getDomain().get(1));
 				}else {
-					x.put(var, "true");
+					x.put(var, var.getDomain().get(0));
 				}
 			}
 		}
