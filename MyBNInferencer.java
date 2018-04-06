@@ -36,13 +36,16 @@ public class MyBNInferencer implements Inferencer{
 		Assignment x = new Assignment();
 		List<RandomVariable> vars = bn.getVariableListTopologicallySorted();
 		for(RandomVariable rvar : vars) {				//assign a value to every random variable based on its prior probability
-			x.put(rvar, rvar.getDomain().get(0));
-			double probT = bn.getProb(rvar, x);
+			double probT = 0;
 			double numba = Math.random();
-			if(numba > probT) {
-				x.set(rvar, rvar.getDomain().get(1));
-			}else {
-				x.set(rvar, rvar.getDomain().get(0));
+			for (int i = 0; i<rvar.getDomain().size()-1; i++) {
+				x.put(rvar, rvar.getDomain().get(i));
+				probT += bn.getProb(rvar, x);
+				if(numba > probT) {
+					x.set(rvar, rvar.getDomain().get(i+1));
+				}else {
+					x.set(rvar, rvar.getDomain().get(i));
+				}
 			}
 		}
 		return x;
@@ -87,13 +90,16 @@ public class MyBNInferencer implements Inferencer{
 				w = w*p;
 				
 			}else {
-				x.put(var, var.getDomain().get(0));
-				double probT = bn.getProb(var, x);
+				double probT = 0;
 				double numba = Math.random();
-				if(numba > probT) {
-					x.put(var, var.getDomain().get(1));
-				}else {
-					x.put(var, var.getDomain().get(0));
+				for (int i = 0; i < var.getDomain().size()-1; i++) {
+					x.put(var, var.getDomain().get(i));
+					probT += bn.getProb(var, x);
+					if(numba > probT) {
+						x.put(var, var.getDomain().get(i+1));
+					}else {
+						x.put(var, var.getDomain().get(i));
+					}
 				}
 			}
 		}

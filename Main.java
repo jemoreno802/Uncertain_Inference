@@ -43,6 +43,7 @@ public class Main {
 			
 		} else { //Testing Approximate Inference
 			int N = Integer.parseInt(argv[0]); //The sample size
+			//int N = 10000;
 			if (argv[1].endsWith("xml"))
 				network = parser.readNetworkFromFile(argv[1]);
 			else{
@@ -67,23 +68,10 @@ public class Main {
 			long start1 = System.nanoTime();
 			Distribution like = inf.likelihood_weighting(X, e, network, N);
 			long end1 = System.nanoTime();
+			System.out.println("Time = "+ (end1-start1)/Math.pow(10, 6));
 			System.out.println(like.toString());
 		}
 		
-		
-		
-		
-//		RandomVariable X = network.getVariableByName(argv[1]);
-//		Assignment e = new Assignment();
-//		
-//		for(int i = 2; i<=argv.length-2;i+=2) {
-//			e.set(network.getVariableByName(argv[i]), argv[i+1]);
-//		}
-//		
-//		System.out.println("Exact Inference: ");
-//		Distribution exact = inf.ask(network, X, e);
-//		System.out.println(exact.toString());
-//		System.out.println();
 		
 		
 	}
